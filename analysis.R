@@ -2,7 +2,7 @@
 # created: 20-02-12
 #(c) created by Inne Lemstra
 
-setwd("X:/computational/400")
+setwd("c:/400")
 
 data <- read.csv("BayShatraitsAll.csv",sep=";")
 phenotypes <- data[,1:404]
@@ -298,6 +298,26 @@ for(rmark in 1:ncol(genotypes)){
 colnames(matru)<- colnames(genotypes)
 norm<- -log10(matru)
 plot(norm[1,],t='l')
+xcuttoff<- replace(norm,norm<3,0)
+
+peak <- function(a){
+  diffpotential <- seq(1,length(a))*0   #deze waarden wil ik graag uitlezen. Als er steeds groei plaatsvindt, dan wordt de waarde steeds groter. Maar als er een keer negatieve groei plaatsvindt, dan wordt hij terug gezet op 0.
+  peaks <- NULL
+    for(i in 2:length(a)){
+	  if(diff(a)[i-1] > 0){ #<- deze waarden geven aan of er groei of niet heeft plaatsgevonden. want als diffa[i]> 0 dan heeft er positieve groei plaatsgevonden.
+	    if(diffpotential[i-1] >= 0) { diffpotential [i] <- diffpotential[i-1] +1} else{diffpotential[i] <- 0}
+	  }  
+	  if(diff(a)[i-1] < 0){
+	    if(diffpotential[i-1] <= 0) { diffpotential [i] <- diffpotential[i-1] -1} else{diffpotential[i] <- 0}
+	  }
+    }
+  x <- (which(diffpotential == 0)-1) # welke waarden nul zijn min 1 om dat daar de piek zit.
+  x <- x[-1]
+  x
+}
+
+
+
 
 
 #The Peak_finder
